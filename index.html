@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Para Yohana</title>
+  <style>
+    :root {
+      --color1: #1f3448;
+      --color2: #2f4761;
+      --color3: #3d5b78;
+      --color4: #4f6e8d;
+      --color-text: #f1f1f1;
+    }
+
+    .pink-theme {
+      --color1: #ffd6e7;
+      --color2: #ff85b3;
+      --color3: #ff4785;
+      --color4: #e6005c;
+      --color-text: #5a0032;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: var(--color1);
+      font-family: 'Segoe UI', sans-serif;
+      position: relative;
+      height: 100vh;
+      color: var(--color-text);
+      transition: background-color 1s ease;
+    }
+
+    .background {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: white;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%,
+                         79% 91%, 50% 70%, 21% 91%, 32% 57%,
+                         2% 35%, 39% 35%);
+      filter: drop-shadow(0 0 2px #fff);
+      animation: float 12s linear infinite;
+      opacity: 0.7;
+    }
+
+    .heart {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      z-index: 1;
+      animation: floatUp 5s ease-in infinite;
+    }
+
+    @keyframes float {
+      from { transform: translateY(100vh); }
+      to { transform: translateY(-10vh); }
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-200px) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    .popup {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--color2);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      text-align: center;
+      z-index: 2;
+      width: 380px;
+      max-width: 90%;
+    }
+
+    .popup img {
+      width: 180px;
+      border-radius: 10px;
+      margin: 0 auto 15px auto;
+      display: block;
+      border: 3px solid var(--color3);
+    }
+
+    .popup h2 {
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+
+    .button-container {
+      position: relative;
+      height: 50px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .yesBtn, .noBtn {
+      padding: 8px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      background-color: var(--color4);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      font-weight: bold;
+      min-width: 80px;
+    }
+
+    .yesBtn:hover {
+      transform: scale(1.05);
+    }
+
+    .yesBtn:active {
+      transform: scale(0.95);
+    }
+
+    .noBtn {
+      position: static;
+      transition: transform 0.3s cubic-bezier(0.25, 1.5, 0.75, 1.5);
+    }
+
+    .noBtn:hover {
+      transform: translateX(0) scale(1.1);
+    }
+
+    .noBtn:active {
+      transform: scale(0.95);
+    }
+  </style>
+</head>
+<body>
+  <div class="background" id="background"></div>
+  <audio id="romanticAudio">
+    <source src="Gustavo Cerati - Amor Amarillo (Official Audio).mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    let resetTimer;
+    let currentNoBtn;
+    const bg = document.getElementById('background');
+    const musica = document.getElementById('romanticAudio');
+    
+    // Configurar el audio para empezar en 1:06 (66 segundos)
+    musica.addEventListener('loadedmetadata', function() {
+      musica.currentTime = 66;
+      musica.volume = 0.7;
+    });
+
+    function crearEstrellas() {
+      bg.innerHTML = '';
+      for (let i = 0; i < 80; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + 'vw';
+        star.style.top = Math.random() * 100 + 'vh';
+        star.style.transform = `rotate(${Math.random() * 360}deg)`;
+        star.style.animationDelay = `${Math.random() * 12}s`;
+        bg.appendChild(star);
+      }
+    }
+
+    function crearCorazonesSVG() {
+      for (let i = 0; i < 40; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.innerHTML = `
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path fill="${getRandomColor()}" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>`;
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.top = (70 + Math.random() * 20) + 'vh';
+        heart.style.animationDelay = `${Math.random() * 5}s`;
+        heart.style.transform = `scale(${0.5 + Math.random() * 0.7})`;
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+      }
+    }
+
+    function getRandomColor() {
+      const colors = ['#ff85b3', '#ff4785', '#e6005c', '#ff66a3'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function crearPopup(texto, callback, imagen = null, esUltimaPantalla = false) {
+      document.body.querySelector('.popup')?.remove();
+
+      const popup = document.createElement('div');
+      popup.className = 'popup';
+
+      if (imagen) {
+        const img = document.createElement('img');
+        img.src = imagen;
+        img.alt = "Gatito";
+        popup.appendChild(img);
+      }
+
+      const h2 = document.createElement('h2');
+      h2.textContent = texto.split('<h2>')[1]?.split('</h2>')[0] || texto;
+      popup.appendChild(h2);
+
+      if (texto.includes('<p>')) {
+        const p = document.createElement('p');
+        p.innerHTML = texto.split('<p>')[1]?.split('</p>')[0] || '';
+        popup.appendChild(p);
+      }
+
+      const container = document.createElement('div');
+      container.className = 'button-container';
+
+      if (!esUltimaPantalla) {
+        const si = document.createElement('button');
+        si.textContent = 'Sí';
+        si.className = 'yesBtn';
+        si.onclick = callback;
+
+        const no = document.createElement('button');
+        no.textContent = 'No';
+        no.className = 'noBtn';
+        currentNoBtn = no;
+
+        no.addEventListener('mouseover', () => {
+          moverNo(no);
+        });
+
+        container.appendChild(si);
+        container.appendChild(no);
+      } else {
+        const ok = document.createElement('button');
+        ok.textContent = 'OK';
+        ok.className = 'yesBtn';
+        ok.onclick = descargarCarta; // Función para descargar la carta
+        container.appendChild(ok);
+      }
+
+      popup.appendChild(container);
+      document.body.appendChild(popup);
+    }
+
+    function moverNo(btn) {
+      clearTimeout(resetTimer);
+      
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 80 + Math.random() * 40;
+      const x = Math.cos(angle) * distance;
+      const y = Math.sin(angle) * distance;
+      
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+      
+      resetearNo(btn);
+    }
+
+    function resetearNo(btn) {
+      resetTimer = setTimeout(() => {
+        btn.style.transform = 'translate(0, 0)';
+      }, 2000);
+    }
+
+    function descargarCarta() {
+      // Crear un enlace temporal para descargar el archivo
+      const link = document.createElement('a');
+      link.href = 'carta.pdf'; // Asegúrate de tener este archivo en tu servidor
+      link.download = 'CartaParaYohana.pdf'; // Nombre del archivo a descargar
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Mostrar mensaje adicional
+      alert("¡Carta descargada! Revisá tus archivos descargados ❤️");
+    }
+
+    function mostrarSegurisima() {
+      document.querySelector('.popup')?.remove();
+      bg.style.backgroundImage = "url('gatito2.jpg')";
+      bg.style.backgroundSize = "cover";
+      bg.style.backgroundPosition = "center";
+      crearPopup('¿Segurísima?', mostrarFinal, null);
+    }
+
+    function mostrarFinal() {
+      document.body.classList.add('pink-theme');
+      bg.innerHTML = '';
+      bg.style.backgroundImage = '';
+      
+      // Reproducir música empezando en 1:06 (66 segundos)
+      musica.currentTime = 66;
+      musica.play();
+      
+      for (let i = 0; i < 60; i++) {
+        setTimeout(() => {
+          crearCorazonesSVG();
+        }, i * 200);
+      }
+      
+      crearPopup(`
+        <h2>Revisá tu teléfono</h2>
+        <p>Descargá la carta que te preparé ❤️</p>
+      `, null, null, true);
+    }
+
+    // Iniciar
+    crearEstrellas();
+    crearPopup('¿Yohana, querés ser mi novia?', () => {
+      crearPopup('¿Estás segura?', mostrarSegurisima, 'gatito2.jpg');
+    }, 'gatito1.jpg');
+  </script>
+</body>
+</html>
