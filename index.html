@@ -58,7 +58,7 @@
       width: 24px;
       height: 24px;
       z-index: 1;
-      animation: floatUp 5s ease-in infinite;
+      animation: floatUp 8s ease-in infinite;
     }
 
     @keyframes float {
@@ -72,7 +72,7 @@
         opacity: 1;
       }
       100% {
-        transform: translateY(-200px) scale(1.2);
+        transform: translateY(-100vh) scale(1.2);
         opacity: 0;
       }
     }
@@ -181,26 +181,34 @@
       }
     }
 
+    function getRandomColor() {
+      const colors = ['#ff85b3', '#ff4785', '#e6005c', '#ff66a3'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
     function crearCorazonesSVG() {
-      for (let i = 0; i < 40; i++) {
+      // Reducir cantidad de corazones a 15
+      for (let i = 0; i < 15; i++) {
         const heart = document.createElement('div');
         heart.className = 'heart';
         heart.innerHTML = `
           <svg viewBox="0 0 24 24" width="24" height="24">
             <path fill="${getRandomColor()}" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
           </svg>`;
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.top = (70 + Math.random() * 20) + 'vh';
-        heart.style.animationDelay = `${Math.random() * 5}s`;
-        heart.style.transform = `scale(${0.5 + Math.random() * 0.7})`;
+        
+        // Distribuir en toda la pantalla
+        heart.style.left = Math.random() * 95 + 2.5 + 'vw'; // Evitar bordes
+        heart.style.top = Math.random() * 100 + 'vh'; // Cualquier posición vertical
+        
+        // Variar tamaño y velocidad
+        const size = 0.4 + Math.random() * 0.8;
+        heart.style.transform = `scale(${size})`;
+        heart.style.animationDuration = (6 + Math.random() * 6) + 's';
+        heart.style.animationDelay = `${Math.random() * 2}s`;
+        
         document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 5000);
+        setTimeout(() => heart.remove(), 8000); // Coincidir con duración animación
       }
-    }
-
-    function getRandomColor() {
-      const colors = ['#ff85b3', '#ff4785', '#e6005c', '#ff66a3'];
-      return colors[Math.floor(Math.random() * colors.length)];
     }
 
     function crearPopup(texto, callback, imagen = null, esUltimaPantalla = false) {
@@ -250,7 +258,7 @@
         const ok = document.createElement('button');
         ok.textContent = 'OK';
         ok.className = 'yesBtn';
-        ok.onclick = descargarCarta; // Función para descargar la carta
+        ok.onclick = descargarCarta;
         container.appendChild(ok);
       }
 
@@ -278,15 +286,13 @@
     }
 
     function descargarCarta() {
-      // Crear un enlace temporal para descargar el archivo
       const link = document.createElement('a');
-      link.href = 'carta.pdf'; // Asegúrate de tener este archivo en tu servidor
-      link.download = 'CartaParaYohana.pdf'; // Nombre del archivo a descargar
+      link.href = 'carta.pdf';
+      link.download = 'CartaParaYohana.pdf';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
-      // Mostrar mensaje adicional
       alert("¡Carta descargada! Revisá tus archivos descargados ❤️");
     }
 
@@ -303,14 +309,14 @@
       bg.innerHTML = '';
       bg.style.backgroundImage = '';
       
-      // Reproducir música empezando en 1:06 (66 segundos)
       musica.currentTime = 66;
       musica.play();
       
-      for (let i = 0; i < 60; i++) {
+      // Reducir cantidad de ráfagas de corazones
+      for (let i = 0; i < 30; i++) {
         setTimeout(() => {
           crearCorazonesSVG();
-        }, i * 200);
+        }, i * 400);
       }
       
       crearPopup(`
@@ -322,7 +328,7 @@
     // Iniciar
     crearEstrellas();
     crearPopup('¿Yohana, querés ser mi novia?', () => {
-      crearPopup('¿Estás segura?', mostrarSegurisima, 'gatito2.jpg');
+      crearPopup('¿Estás segura?', mostrarSegurisima, 'gatito1.jpg');
     }, 'gatito1.jpg');
   </script>
 </body>
